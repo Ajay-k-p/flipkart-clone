@@ -1,0 +1,195 @@
+/* Page layout */
+.admin-page {
+  padding: 40px 60px;
+  background: #f9f9f9;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header with Dropdown */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* Main Heading */
+.admin-heading {
+  font-size: 36px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Dropdown Menu */
+.admin-dropdown {
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #fff;
+  transition: 0.2s ease;
+}
+
+.admin-dropdown:hover {
+  border-color: #ffd54f;
+  box-shadow: 0 0 8px rgba(255, 213, 79, 0.3);
+}
+
+/* Section */
+.section {
+  margin-bottom: 50px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #444;
+  border-bottom: 2px solid #ffd54f;
+  padding-bottom: 5px;
+}
+
+/* ---------------------- */
+/*  ADD PRODUCT CENTERED  */
+/* ---------------------- */
+.add-product-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.add-product-card {
+  width: 400px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Small Image Preview */
+.admin-small-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+}
+
+/* Inputs */
+.input-field,
+.select-field,
+.date-field,
+.input-file {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: 0.3s ease;
+}
+
+.input-field:focus,
+.select-field:focus,
+.date-field:focus {
+  border-color: #ffd54f;
+  outline: none;
+  box-shadow: 0 0 8px rgba(255, 213, 79, 0.3);
+}
+
+/* Buttons */
+.btn-yellow,
+.btn-red {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 5px;
+}
+
+.btn-yellow {
+  background: #ffd54f;
+  color: #222;
+}
+
+.btn-yellow:hover {
+  background: #f4c430;
+}
+
+.btn-red {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.btn-red:hover {
+  background: #e55a5a;
+}
+
+/* -------------------------------- */
+/*  3-COLUMN GRID FOR PRODUCTS/ORDERS */
+/* -------------------------------- */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+/* Compact Cards for Grid */
+.admin-small-card {
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: 0.2s ease;
+}
+
+.admin-small-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+}
+
+.admin-small-card p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* Order product small box */
+.order-product-item {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 8px;
+  border: 1px solid #eee;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 900px) {
+  .admin-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .admin-page {
+    padding: 20px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-product-card {
+    width: 100%;
+  }
+}

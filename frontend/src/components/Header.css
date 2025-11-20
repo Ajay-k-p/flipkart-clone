@@ -1,0 +1,130 @@
+/* ===== HEADER BASE ===== */
+.header {
+  background-color: #2874f0;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* ===== LEFT SECTION ===== */
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Logo */
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+/* ===== ABOUT LINK (NEW) ===== */
+.about-link {
+  font-size: 16px;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.about-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== SEARCH BAR ===== */
+.search-bar {
+  display: flex;
+  width: 35%;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+}
+
+.search-bar button {
+  background: #ffca28;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.search-bar button:hover {
+  background: #ffb000;
+}
+
+/* ===== RIGHT SECTION ===== */
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.welcome {
+  font-weight: bold;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: #d9534f;
+  border: none;
+  padding: 8px 14px;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #c9302c;
+}
+/* ABOUT LINK (Make white) */
+.about-link {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.about-link:hover {
+  text-decoration: underline;
+}
+
+/* CART BADGE */
+.cart-wrapper {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -12px;
+  background: #ff3d3d;
+  color: white;
+  padding: 2px 7px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+}
+

@@ -1,0 +1,22 @@
+.about-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.about-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.about-text {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #444;
+  margin-bottom: 15px;
+}

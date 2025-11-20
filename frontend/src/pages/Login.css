@@ -1,0 +1,114 @@
+/* Full-screen center layout */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Premium yellow gradient */
+  background: linear-gradient(135deg, #fff7c4 0%, #ffe259 50%, #f7b733 100%);
+  padding: 20px;
+}
+
+/* Login Card */
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffffdd; /* translucent white */
+  backdrop-filter: blur(10px);
+  padding: 35px;
+  border-radius: 20px;
+
+  border: 2px solid #ffe47a;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Title */
+.login-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 25px;
+  color: #c27f00;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Labels */
+.login-card label {
+  font-weight: 600;
+  color: #5c4500;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Inputs */
+.login-card input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #ffd95e;
+  border-radius: 10px;
+  background: #fffaf0;
+  font-size: 15px;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+.login-card input:focus {
+  border-color: #ffba08;
+  background: #fff3cd;
+  box-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
+}
+
+/* Yellow Button */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #ffca2c, #ffb800);
+  color: #4a3b00;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+
+  transition: 0.25s ease;
+}
+
+.login-btn:hover {
+  background: linear-gradient(90deg, #ffdd2c, #ffc400);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(255, 200, 0, 0.55);
+}
+
+/* Footer */
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 15px;
+  color: #4b3e00;
+}
+
+.login-footer a {
+  color: #c27f00;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Fade Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

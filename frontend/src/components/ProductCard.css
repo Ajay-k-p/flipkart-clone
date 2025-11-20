@@ -1,0 +1,79 @@
+.product-card {
+  background: white;
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.product-card:hover {
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.12);
+  transform: translateY(-3px);
+}
+
+/* FIXED IMAGE SIZE — SAME FOR ALL PRODUCTS */
+.product-img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* Product name */
+.product-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 5px;
+  height: 40px; /* fixes alignment */
+  overflow: hidden;
+}
+
+/* Price text */
+.product-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #028a0f;
+  margin-bottom: 4px;
+}
+
+.product-qty {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+/* Add to Cart button */
+.add-btn {
+  background: #ff9f00;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.add-btn:hover {
+  background: #fb8c00;
+}
+.buy-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  background-color: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.buy-btn:hover {
+  background-color: #e64a19;
+}

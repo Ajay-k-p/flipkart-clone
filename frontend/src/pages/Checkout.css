@@ -1,0 +1,131 @@
+/* Checkout Container */
+.checkout-page {
+  width: 100%;
+  max-width: 850px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  border: 1px solid #f0f0f0;
+}
+
+/* Title */
+.checkout-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+/* Product List */
+.checkout-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Each Product Box */
+.checkout-item {
+  display: flex;
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 12px;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  border: 1px solid #ececec;
+  transition: 0.2s ease;
+}
+
+.checkout-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+/* Product Image */
+.checkout-item img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+}
+
+/* Product Details */
+.checkout-details {
+  margin-left: 20px;
+  flex: 1;
+}
+
+.checkout-details h3 {
+  font-size: 20px;
+  margin: 0;
+  color: #222;
+  font-weight: 600;
+}
+
+.checkout-details p {
+  margin: 4px 0;
+  color: #444;
+  font-size: 15px;
+}
+
+/* Pricing Box */
+.price-box {
+  margin-top: 25px;
+  padding: 22px;
+  background: #fff7e0;
+  border: 1px solid #ffc966;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(255,180,70,0.2);
+}
+
+.price-box h2 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Place Order Button */
+.place-order-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(45deg, #ff7a00, #ff5500);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-top: 25px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: 0.25s ease;
+}
+
+.place-order-btn:hover {
+  background: linear-gradient(45deg, #ff5500, #ff3300);
+  transform: translateY(-2px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .checkout-item {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .checkout-item img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .checkout-details {
+    margin: 15px 0 0 0;
+  }
+}
