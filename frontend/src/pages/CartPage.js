@@ -1,4 +1,4 @@
-import { useState } from 'react'; 
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart, removeFromCart } from '../redux/orderSlice';
 import axios from 'axios';
@@ -13,6 +13,15 @@ const CartPage = () => {
 
   const handleBuyNow = async () => {
     if (cart.length === 0) return;
+
+    // ❌ Block out of stock items
+    for (const item of cart) {
+      if (item.quantity <= 0) {
+        alert(`"${item.name}" is out of stock.`);
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
@@ -42,9 +51,7 @@ const CartPage = () => {
   return (
     <>
       <Header />
-
       <div className="cart-page">
-
         <h1 className="cart-title">Your Cart</h1>
 
         {cart.length === 0 ? (
@@ -64,8 +71,8 @@ const CartPage = () => {
 
                   <h3 className="cart-item-name">{item.name}</h3>
                   <p className="cart-item-price">₹{item.price}</p>
+                  <p className="cart-item-stock">Stock: {item.quantity}</p>
 
-                  {/* ⭐ REMOVE FROM CART BUTTON */}
                   <button
                     className="remove-btn"
                     onClick={() => dispatch(removeFromCart(item._id))}

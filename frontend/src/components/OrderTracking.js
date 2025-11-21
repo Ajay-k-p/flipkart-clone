@@ -11,11 +11,19 @@ const OrderTracking = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      dispatch(setOrders(res.data));
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/orders`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        dispatch(setOrders(res.data));
+      } catch (err) {
+        console.error("Order fetch error:", err);
+        alert(err.response?.data?.message || "Failed to load orders");
+      }
     };
+
     fetchOrders();
   }, [dispatch, token]);
 
@@ -24,6 +32,17 @@ const OrderTracking = () => {
     if (status === "Delivered") return "text-green-600 font-bold";
     if (status === "Shipped") return "text-blue-600 font-bold";
     return "text-orange-600 font-bold"; // Pending
+  };
+
+  // ⭐ FIX: build full image URL
+  const resolveImage = (img) => {
+    if (!img) return "/placeholder-image.png";
+
+    // If already full URL, keep it
+    if (img.startsWith("http") || img.startsWith("https")) return img;
+
+    // Otherwise, add backend uploads path
+    return `${process.env.REACT_APP_API_URL}/uploads/${img}`;
   };
 
   return (
@@ -36,47 +55,46 @@ const OrderTracking = () => {
         orders.map(order => (
           <div key={order._id} className="border p-4 mb-6 rounded-lg shadow-md bg-white">
 
-            {/* Order ID */}
             <h3 className="text-lg font-semibold">
               Order ID: {order._id}
             </h3>
 
-            {/* Status */}
             <p className={`mt-1 ${getStatusColor(order.status)}`}>
               Status: {order.status}
             </p>
 
-            {/* Expected Delivery */}
             {order.expectedDelivery && (
               <p className="text-sm text-gray-600">
-                Expected Delivery: {new Date(order.expectedDelivery).toLocaleDateString()}
+                Expected Delivery:{" "}
+                {new Date(order.expectedDelivery).toLocaleDateString()}
               </p>
             )}
 
-            {/* Product List */}
             <div className="mt-4 space-y-4">
-              {order.products.map((item, index) => (
-                <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg shadow-sm">
+              {order.products?.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center bg-gray-50 p-3 rounded-lg shadow-sm"
+                >
+                  {/* ⭐ PRODUCT IMAGE FIXED */}
+                  <img
+                    src={resolveImage(item.productImage)}
+                    alt={item.productName}
+                    className="product-img"
+                    onError={(e) => (e.target.src = "/placeholder-image.png")}
+                  />
 
-                  {/* ⭐ Product Image */}
-<img
-  src={item.productImage}
-  alt={item.productName}
-  className="product-img"
-  onError={(e) => e.target.src = "/placeholder-image.png"}
-/>
-
-
-                  {/* ⭐ Product Details */}
                   <div>
                     <p className="font-semibold text-lg">{item.productName}</p>
                     <p className="text-sm text-gray-700">Qty: {item.quantity}</p>
-                    <p className="text-sm font-semibold text-gray-900">Price: ₹{item.price}</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      Price: ₹{item.price}
+                    </p>
                   </div>
-
                 </div>
               ))}
             </div>
+
           </div>
         ))
       )}

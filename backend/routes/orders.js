@@ -5,31 +5,59 @@ const { auth, adminAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
-
-// ===============================
-//     PLACE ORDER (USER)
-// ===============================
+// =============================================
+//       PLACE ORDER  (USER)
+// =============================================
 router.post("/", auth, async (req, res) => {
   try {
     const { products } = req.body;
 
-    // Attach productName + productImage from DB
-    const enrichedProducts = await Promise.all(
-      products.map(async (item) => {
-        const product = await Product.findById(item.productId);
+    if (!products || !products.length) {
+      return res.status(400).json({ message: "No products in order" });
+    }
 
-        return {
-          productId: product._id,
-          productName: product.name,
-          productImage: product.image.startsWith("http")
-            ? product.image
-            : `${process.env.BASE_URL}${product.image}`,
-          quantity: item.quantity,
-          price: item.price
-        };
-      })
-    );
+    let enrichedProducts = [];
 
+    for (const item of products) {
+      const product = await Product.findById(item.productId);
+
+      if (!product) {
+        return res.status(404).json({
+          message: `Product not found: ${item.productId}`,
+        });
+      }
+
+      // ❌ Out of stock
+      if (Number(product.quantity) < Number(item.quantity)) {
+        return res.status(400).json({
+          message: `"${product.name}" is out of stock`,
+          availableStock: product.quantity,
+        });
+      }
+
+      // 🔥 CORRECT STOCK REDUCTION
+      const newQuantity = Number(product.quantity) - Number(item.quantity);
+
+      // 🔥 FORCE SAVE STOCK USING updateOne (never fails)
+      await Product.updateOne(
+        { _id: product._id },
+        {
+          quantity: newQuantity,
+          isOutOfStock: newQuantity <= 0
+        }
+      );
+
+      // Add product to order
+      enrichedProducts.push({
+        productId: product._id,
+        productName: product.name,
+        productImage: product.image, // no change
+        quantity: item.quantity,
+        price: item.price
+      });
+    }
+
+    // Save order
     const order = new Order({
       userId: req.user.id,
       products: enrichedProducts,
@@ -38,11 +66,11 @@ router.post("/", auth, async (req, res) => {
 
     await order.save();
 
-    // Notify admin via socket
+    // Notify admin
     const io = req.app.get("io");
     if (io) io.emit("orderPlaced", order);
 
-    res.status(201).json(order);
+    res.status(201).json({ message: "Order placed successfully", order });
 
   } catch (error) {
     console.error("Order Place Error:", error);
@@ -50,44 +78,38 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-
-// ===============================
-//     GET USER ORDERS
-// ===============================
+// =============================================
+//       GET USER ORDERS
+// =============================================
 router.get("/", auth, async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user.id }).sort({ createdAt: -1 });
     res.json(orders);
-
   } catch (error) {
     console.error("Get User Orders Error:", error);
     res.status(500).json({ message: "Failed to fetch orders" });
   }
 });
 
-
-// ===============================
-//     ADMIN: GET ALL ORDERS
-// ===============================
-// ⭐ UPDATED HERE → populate user name + email
+// =============================================
+//       ADMIN: GET ALL ORDERS
+// =============================================
 router.get("/admin/all", auth, adminAuth, async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate("userId", "name email")   // ⭐ FIX: This shows user name in admin
+      .populate("userId", "name email")
       .sort({ createdAt: -1 });
 
     res.json(orders);
-
   } catch (error) {
     console.error("Admin Get Orders Error:", error);
     res.status(500).json({ message: "Failed to fetch admin orders" });
   }
 });
 
-
-// ===============================
-//     ADMIN: UPDATE ORDER
-// ===============================
+// =============================================
+//       ADMIN: UPDATE ORDER
+// =============================================
 router.put("/admin/update/:id", auth, adminAuth, async (req, res) => {
   try {
     const { status, expectedDelivery } = req.body;
@@ -109,6 +131,5 @@ router.put("/admin/update/:id", auth, adminAuth, async (req, res) => {
     res.status(500).json({ message: "Failed to update order" });
   }
 });
-
 
 module.exports = router;

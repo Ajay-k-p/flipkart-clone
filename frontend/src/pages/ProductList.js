@@ -15,25 +15,38 @@ const ProductList = () => {
   const [filtered, setFiltered] = useState([]);
 
   // Get search query from URL
-  const query = new URLSearchParams(location.search).get("q")?.toLowerCase() || "";
+  const query =
+    new URLSearchParams(location.search).get("q")?.toLowerCase() || "";
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/products`);
+  // ⭐ Reusable fetch function
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/products`
+      );
       dispatch(setProducts(res.data));
-    };
+    } catch (error) {
+      console.error("Failed to load products", error);
+    }
+  };
+
+  // ⭐ First load
+  useEffect(() => {
     fetchProducts();
   }, [dispatch]);
 
-  // Filter products using search query
+  // ⭐ Auto refresh when coming back from checkout page
+  useEffect(() => {
+    fetchProducts();
+  }, [location.key]); // runs when page is revisited
+
+  // ⭐ Filter by search query
   useEffect(() => {
     if (!query) {
       setFiltered(products);
     } else {
       setFiltered(
-        products.filter((p) =>
-          p.name.toLowerCase().includes(query)
-        )
+        products.filter((p) => p.name.toLowerCase().includes(query))
       );
     }
   }, [query, products]);

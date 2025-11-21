@@ -11,11 +11,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
 
   const { token } = useSelector((state) => state.auth);
-  
-  // If Buy Now → product comes from state
   const buyNowProduct = location.state?.buyNowProduct;
-
-  // If cart checkout → use cart items
   const cart = useSelector((state) => state.orders.cart);
 
   const productsToOrder = buyNowProduct
@@ -39,6 +35,22 @@ const Checkout = () => {
       return;
     }
 
+    // ❌ If Buy Now product is out of stock
+    if (buyNowProduct && buyNowProduct.quantity <= 0) {
+      alert("Product is out of stock!");
+      return;
+    }
+
+    // ❌ Cart checkout stock check
+    if (!buyNowProduct) {
+      for (const item of cart) {
+        if (item.quantity <= 0) {
+          alert(`"${item.name}" is out of stock!`);
+          return;
+        }
+      }
+    }
+
     try {
       await axios.post(
         `${process.env.REACT_APP_API_URL}/api/orders`,
@@ -48,7 +60,6 @@ const Checkout = () => {
         }
       );
 
-      // Clear cart only if it was a cart checkout
       if (!buyNowProduct) dispatch(clearCart());
 
       alert("Order placed successfully!");
@@ -66,7 +77,6 @@ const Checkout = () => {
       <div className="checkout-page">
         <h1>Checkout</h1>
 
-        {/* Show selected product(s) */}
         <div className="checkout-items">
           {buyNowProduct ? (
             <div className="checkout-item">

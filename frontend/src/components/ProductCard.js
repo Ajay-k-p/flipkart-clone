@@ -6,19 +6,23 @@ import './ProductCard.css';
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { token } = useSelector((state) => state.auth); // user login check
+  const { token } = useSelector((state) => state.auth);
 
-  // Add to Cart with Login Check
   const handleAddToCart = () => {
     if (!token) {
       alert("Please login to continue");
       navigate("/login");
       return;
     }
+
+    if (product.quantity <= 0) {
+      alert("Product is out of stock!");
+      return;
+    }
+
     dispatch(addToCart(product));
   };
 
-  // Buy Now with Login Check
   const handleBuyNow = () => {
     if (!token) {
       alert("Please login to buy products");
@@ -26,7 +30,11 @@ const ProductCard = ({ product }) => {
       return;
     }
 
-    // Direct checkout with only THIS product
+    if (product.quantity <= 0) {
+      alert("Product is out of stock!");
+      return;
+    }
+
     navigate("/checkout", { state: { buyNowProduct: product } });
   };
 

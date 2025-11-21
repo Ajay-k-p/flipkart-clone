@@ -107,3 +107,13 @@
 .remove-btn:hover {
   background: #d93636;
 }
+.out-stock-badge {
+  position: absolute;
+  background: red;
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  top: 10px;
+  right: 10px;
+}

@@ -6,7 +6,9 @@ const { auth, adminAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Multer setup
+// =========================
+// Multer Setup
+// =========================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) =>
@@ -15,7 +17,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// GET all products (public)
+// =========================
+// GET ALL PRODUCTS (PUBLIC)
+// =========================
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
@@ -26,39 +30,51 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST add product (admin only)
+// =========================
+// ADD PRODUCT (ADMIN ONLY)
+// =========================
 router.post('/', auth, adminAuth, upload.single('image'), async (req, res) => {
   try {
-    const imageUrl = req.file
-      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
-      : null;
+    const { name, price, quantity, description, category } = req.body;
 
     const newProduct = new Product({
-      name: req.body.name,
-      price: req.body.price,
-      quantity: req.body.quantity,
-      image: imageUrl,
+      name,
+      price,
+      quantity,
+      description: description || "",
+      category: category || "general",
+      image: req.file ? req.file.filename : null, // only filename stored
     });
 
     await newProduct.save();
-    res.status(201).json(newProduct);
+    res.status(201).json({
+      message: "Product added successfully",
+      product: newProduct
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to add product' });
+    res.status(500).json({ message: 'Failed to add product', error: err });
   }
 });
 
-// PUT update product (admin only)
+// =========================
+// UPDATE PRODUCT (ADMIN ONLY)
+// =========================
 router.put('/:id', auth, adminAuth, upload.single('image'), async (req, res) => {
   try {
+    const { name, price, quantity, description, category } = req.body;
+
     const updateData = {
-      name: req.body.name,
-      price: req.body.price,
-      quantity: req.body.quantity,
+      name,
+      price,
+      quantity,
+      description,
+      category
     };
 
+    // Update image only if provided
     if (req.file) {
-      updateData.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      updateData.image = req.file.filename;
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -70,14 +86,20 @@ router.put('/:id', auth, adminAuth, upload.single('image'), async (req, res) => 
     if (!updatedProduct)
       return res.status(404).json({ message: 'Product not found' });
 
-    res.json(updatedProduct);
+    res.json({
+      message: "Product updated successfully",
+      product: updatedProduct
+    });
+    
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to update product' });
+    res.status(500).json({ message: 'Failed to update product', error: err });
   }
 });
 
-// DELETE product (admin only)
+// =========================
+// DELETE PRODUCT (ADMIN ONLY)
+// =========================
 router.delete('/:id', auth, adminAuth, async (req, res) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
