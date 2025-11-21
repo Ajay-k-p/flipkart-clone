@@ -1,22 +1,48 @@
+/* ===========================
+   PRODUCT PAGE WRAPPER
+=========================== */
 .product-page {
   padding: 20px;
   background: #f5f6f9;
 }
 
-.title {
-  font-size: 24px;
+/* Page Title */
+.product-title {
+  font-size: 26px;
   font-weight: 700;
   margin-bottom: 20px;
+  color: #222;
+  padding-left: 5px;
 }
 
-/* Flipkart-like grid layout */
+/* ===========================
+   PRODUCT GRID – RESPONSIVE
+=========================== */
+
+/* Desktop: 6 per row */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 18px;
 }
 
-/* Make all product cards same look */
+/* Tablet: 3 per row */
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile: 2 per row */
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===========================
+   PRODUCT CARD BASE STYLE
+=========================== */
 .product-card {
   background: white;
   border: 1px solid #e2e2e2;
@@ -24,39 +50,100 @@
   padding: 12px;
   text-align: center;
   transition: 0.3s ease;
-  cursor: pointer;
 }
 
+/* Hover */
 .product-card:hover {
   box-shadow: 0px 4px 15px rgba(0,0,0,0.12);
+  transform: translateY(-3px);
 }
 
-/* FIXED IMAGE SIZE — EXACT LIKE FLIPKART */
+/* ===========================
+   FIXED IMAGE SIZE
+=========================== */
 .product-card img {
   width: 100%;
-  height: 180px;     /* FIXED HEIGHT */
+  height: 180px;   /* FIXED HEIGHT */
   object-fit: contain;
   margin-bottom: 10px;
+  background: #fff;
+  border-radius: 6px;
 }
 
-/* Text */
+/* ===========================
+   PRODUCT TEXT
+=========================== */
 .product-name {
   font-size: 16px;
   font-weight: 600;
   color: #222;
   margin-bottom: 6px;
-  height: 40px;      /* FIXED HEIGHT FOR TITLE ALIGNMENT */
-  overflow: hidden;
+  min-height: 38px; /* fixes title alignment */
 }
 
 .product-price {
-  font-size: 17px;
-  font-weight: bold;
+  font-size: 18px;
   color: #028a0f;
+  font-weight: 700;
 }
 
-.status-text {
+.product-stock {
   font-size: 14px;
-  margin-top: 4px;
-  color: #1b7fff;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+/* ===========================
+   OUT OF STOCK BADGE
+=========================== */
+.out-of-stock-badge {
+  background: red;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-weight: bold;
+}
+
+/* ===========================
+   BUTTON FIXES FOR MOBILE
+=========================== */
+.add-btn,
+.buy-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.add-btn {
+  background: #ff9f00;
+  color: white;
+}
+
+.add-btn:hover {
+  background: #fb8c00;
+}
+
+.buy-btn {
+  background: #ff5722;
+  color: white;
+}
+
+.buy-btn:hover {
+  background: #e64a19;
+}
+
+.add-btn:disabled,
+.buy-btn:disabled {
+  background: #888;
+  cursor: not-allowed;
+  opacity: 0.6;
 }

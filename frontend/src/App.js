@@ -12,7 +12,7 @@ import socket from './socket';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addProduct } from './redux/productSlice';
-import { updateOrder } from './redux/orderSlice';
+//import { updateOrder } from './redux/orderSlice';
 
 
 function App() {

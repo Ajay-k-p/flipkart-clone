@@ -1,4 +1,6 @@
-/* ===== HEADER BASE ===== */
+/* ===========================
+      HEADER BASE
+=========================== */
 .header {
   background-color: #2874f0;
   color: white;
@@ -6,45 +8,48 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: Arial, sans-serif;
+  flex-wrap: wrap;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  flex-wrap: wrap; /* enables wrapping on small screens */
+  font-family: Arial, sans-serif;
 }
 
-/* ===== LEFT SECTION ===== */
+/* ===========================
+      LEFT SECTION
+=========================== */
 .left-section {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 20px;
 }
 
 .logo {
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: 700;
   color: white;
   text-decoration: none;
 }
 
-/* ===== ABOUT LINK ===== */
+/* About Link */
 .about-link {
   font-size: 16px;
-  color: white !important;
+  color: white;
   text-decoration: none;
-  font-weight: 500;
 }
-
 .about-link:hover {
   text-decoration: underline;
 }
 
-/* ===== SEARCH BAR ===== */
+/* ===========================
+      SEARCH BAR
+=========================== */
 .search-bar {
   display: flex;
-  width: 35%;
   background: white;
   border-radius: 6px;
   overflow: hidden;
-  margin-left: 15px;
+  width: 35%;
+  min-width: 260px;
+  margin-left: 20px;
 }
 
 .search-bar input {
@@ -52,6 +57,7 @@
   padding: 10px;
   border: none;
   outline: none;
+  font-size: 15px;
 }
 
 .search-bar button {
@@ -61,16 +67,18 @@
   cursor: pointer;
   font-weight: bold;
 }
-
 .search-bar button:hover {
   background: #ffb000;
 }
 
-/* ===== RIGHT SECTION ===== */
+/* ===========================
+      RIGHT SECTION
+=========================== */
 .right-section {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .nav-link {
@@ -78,13 +86,8 @@
   text-decoration: none;
   font-weight: 500;
 }
-
 .nav-link:hover {
   text-decoration: underline;
-}
-
-.welcome {
-  font-weight: bold;
 }
 
 .logout-btn {
@@ -94,17 +97,16 @@
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
 }
-
 .logout-btn:hover {
   background: #c9302c;
 }
 
-/* CART BADGE */
+/* Cart badge */
 .cart-wrapper {
   position: relative;
 }
-
 .cart-badge {
   position: absolute;
   top: -6px;
@@ -117,54 +119,59 @@
   font-weight: bold;
 }
 
-/* ========================================================= */
-/*                     RESPONSIVE DESIGN                     */
-/* ========================================================= */
-
-/* TABLETS */
+/* ===========================
+      TABLET VIEW
+=========================== */
 @media (max-width: 900px) {
   .search-bar {
-    width: 55%;
-  }
-
-  .left-section {
-    gap: 15px;
+    width: 50%;
   }
 }
 
-/* MOBILE */
+/* ===========================
+      MOBILE VIEW
+=========================== */
 @media (max-width: 600px) {
+
+  /* Stack header vertically */
   .header {
     flex-direction: column;
     align-items: flex-start;
-    padding: 12px 15px;
+    padding: 15px;
   }
 
+  /* logo + about side by side */
   .left-section {
     width: 100%;
     justify-content: space-between;
-  }
-
-  .search-bar {
-    width: 100%;
-    margin: 12px 0;
-  }
-
-  .right-section {
-    width: 100%;
-    justify-content: space-between;
+    gap: 10px;
   }
 
   .logo {
     font-size: 20px;
   }
 
+  /* Full-width search bar */
+  .search-bar {
+    width: 100%;
+    margin: 12px 0;
+  }
+
+  /* Wrap nav links properly */
+  .right-section {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* smaller text on mobile */
   .nav-link {
     font-size: 14px;
   }
 
   .logout-btn {
-    padding: 6px 10px;
+    padding: 6px 12px;
     font-size: 14px;
   }
 }
