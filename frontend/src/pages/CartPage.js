@@ -1,34 +1,36 @@
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { clearCart, removeFromCart } from '../redux/orderSlice';
-import axios from 'axios';
-import Header from '../components/Header';
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { clearCart, removeFromCart } from "../redux/orderSlice";
+import axios from "axios";
+import Header from "../components/Header";
 import "./CartPage.css";
 
 const CartPage = () => {
-  const cart = useSelector(state => state.orders.cart);
-  const { token } = useSelector(state => state.auth);
+  const cart = useSelector((state) => state.orders.cart);
+  const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBuyNow = async () => {
-    if (cart.length === 0) return;
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
 
-    // ❌ Block out of stock items
-    for (const item of cart) {
-      if (item.quantity <= 0) {
-        alert(`"${item.name}" is out of stock.`);
-        return;
-      }
+    // Prevent checkout if any item is out of stock
+    const outOfStock = cart.find((c) => c.quantity <= 0);
+    if (outOfStock) {
+      alert(`"${outOfStock.name}" is out of stock! Remove it to continue.`);
+      return;
     }
 
     setIsLoading(true);
 
     try {
-      const products = cart.map(item => ({
+      const products = cart.map((item) => ({
         productId: item._id,
         quantity: 1,
-        price: item.price
+        price: item.price,
       }));
 
       await axios.post(
@@ -38,11 +40,13 @@ const CartPage = () => {
       );
 
       dispatch(clearCart());
-      alert("Order placed! Check your dashboard for tracking.");
+      alert("Order placed successfully!");
 
     } catch (error) {
-      console.error('Error placing order:', error);
-      alert("Failed to place order.");
+      alert(
+        error.response?.data?.message ||
+        "Order failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -51,6 +55,7 @@ const CartPage = () => {
   return (
     <>
       <Header />
+
       <div className="cart-page">
         <h1 className="cart-title">Your Cart</h1>
 
@@ -59,19 +64,22 @@ const CartPage = () => {
         ) : (
           <>
             <div className="cart-grid">
-              {cart.map(item => (
+              {cart.map((item) => (
                 <div key={item._id} className="cart-card">
-
                   <img
                     src={item.image}
                     alt={item.name}
                     className="cart-img"
-                    onError={(e) => { e.target.src = '/placeholder-image.png'; }}
+                    onError={(e) => {
+                      if (!e.target.dataset.error) {
+                        e.target.dataset.error = "true";
+                        e.target.src = "/placeholder-image.png";
+                      }
+                    }}
                   />
 
                   <h3 className="cart-item-name">{item.name}</h3>
                   <p className="cart-item-price">₹{item.price}</p>
-                  <p className="cart-item-stock">Stock: {item.quantity}</p>
 
                   <button
                     className="remove-btn"
@@ -79,7 +87,6 @@ const CartPage = () => {
                   >
                     Remove
                   </button>
-
                 </div>
               ))}
             </div>

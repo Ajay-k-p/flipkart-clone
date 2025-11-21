@@ -14,11 +14,11 @@ const ProductList = () => {
 
   const [filtered, setFiltered] = useState([]);
 
-  // Get search query from URL
+  // Extract search query (if exists)
   const query =
     new URLSearchParams(location.search).get("q")?.toLowerCase() || "";
 
-  // ⭐ Reusable fetch function
+  // ⭐ Reusable product fetch function
   const fetchProducts = async () => {
     try {
       const res = await axios.get(
@@ -30,23 +30,26 @@ const ProductList = () => {
     }
   };
 
-  // ⭐ First load
+  // ⭐ Fetch products when page initially opens
   useEffect(() => {
     fetchProducts();
-  }, [dispatch]);
+  }, []); // only once
 
-  // ⭐ Auto refresh when coming back from checkout page
+  // ⭐ Refresh when user comes back from checkout page
+  // (React updates location.key whenever the page changes)
   useEffect(() => {
     fetchProducts();
-  }, [location.key]); // runs when page is revisited
+  }, [location.key]);
 
-  // ⭐ Filter by search query
+  // ⭐ Apply search filtering
   useEffect(() => {
     if (!query) {
       setFiltered(products);
     } else {
       setFiltered(
-        products.filter((p) => p.name.toLowerCase().includes(query))
+        products.filter((p) =>
+          p.name.toLowerCase().includes(query)
+        )
       );
     }
   }, [query, products]);

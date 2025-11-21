@@ -8,6 +8,7 @@
   justify-content: space-between;
   font-family: Arial, sans-serif;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  flex-wrap: wrap; /* enables wrapping on small screens */
 }
 
 /* ===== LEFT SECTION ===== */
@@ -17,7 +18,6 @@
   gap: 25px;
 }
 
-/* Logo */
 .logo {
   font-size: 22px;
   font-weight: bold;
@@ -25,7 +25,7 @@
   text-decoration: none;
 }
 
-/* ===== ABOUT LINK (NEW) ===== */
+/* ===== ABOUT LINK ===== */
 .about-link {
   font-size: 16px;
   color: white !important;
@@ -44,6 +44,7 @@
   background: white;
   border-radius: 6px;
   overflow: hidden;
+  margin-left: 15px;
 }
 
 .search-bar input {
@@ -86,7 +87,6 @@
   font-weight: bold;
 }
 
-/* Logout Button */
 .logout-btn {
   background: #d9534f;
   border: none;
@@ -98,17 +98,6 @@
 
 .logout-btn:hover {
   background: #c9302c;
-}
-/* ABOUT LINK (Make white) */
-.about-link {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.about-link:hover {
-  text-decoration: underline;
 }
 
 /* CART BADGE */
@@ -128,3 +117,54 @@
   font-weight: bold;
 }
 
+/* ========================================================= */
+/*                     RESPONSIVE DESIGN                     */
+/* ========================================================= */
+
+/* TABLETS */
+@media (max-width: 900px) {
+  .search-bar {
+    width: 55%;
+  }
+
+  .left-section {
+    gap: 15px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 15px;
+  }
+
+  .left-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search-bar {
+    width: 100%;
+    margin: 12px 0;
+  }
+
+  .right-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+  }
+
+  .logout-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+}
