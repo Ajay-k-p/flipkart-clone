@@ -17,9 +17,10 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+// 🔥 IMPORTANT: Use MONGO_URL (Atlas), not MONGO_URI (local Compass)
+mongoose.connect(process.env.MONGO_URL)
+  .then(() => console.log('MongoDB Connected to Atlas'))
+  .catch(err => console.log("Database Error:", err));
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
@@ -34,5 +35,6 @@ app.use('/api/orders', orderRoutes);
 // Attach socket.io for order notifications
 app.set('io', io);
 
+// Port for Render
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
