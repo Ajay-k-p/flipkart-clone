@@ -17,16 +17,17 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Helper to create correct image URL
-const getImageUrl = (req, filename) => {
-  const BASE_URL =
-    process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+// ===============================
+// FIXED: Always use Render Base URL
+// ===============================
+const BASE_URL = "https://flipkart-clone-glvx.onrender.com";
 
+const getImageUrl = (filename) => {
   return `${BASE_URL}/uploads/${filename}`;
 };
 
 // ===============================
-// GET ALL PRODUCTS (Public)
+// GET ALL PRODUCTS
 // ===============================
 router.get("/", async (req, res) => {
   try {
@@ -39,11 +40,11 @@ router.get("/", async (req, res) => {
 });
 
 // ===============================
-// ADD PRODUCT (Admin Only)
+// ADD PRODUCT (Admin)
 // ===============================
 router.post("/", auth, adminAuth, upload.single("image"), async (req, res) => {
   try {
-    const imageUrl = req.file ? getImageUrl(req, req.file.filename) : null;
+    const imageUrl = req.file ? getImageUrl(req.file.filename) : null;
 
     const newProduct = new Product({
       name: req.body.name,
@@ -63,47 +64,40 @@ router.post("/", auth, adminAuth, upload.single("image"), async (req, res) => {
 });
 
 // ===============================
-// UPDATE PRODUCT (Admin Only)
+// UPDATE PRODUCT (Admin)
 // ===============================
-router.put(
-  "/:id",
-  auth,
-  adminAuth,
-  upload.single("image"),
-  async (req, res) => {
-    try {
-      const updateData = {
-        name: req.body.name,
-        price: req.body.price,
-        quantity: req.body.quantity,
-        description: req.body.description,
-        category: req.body.category,
-      };
+router.put("/:id", auth, adminAuth, upload.single("image"), async (req, res) => {
+  try {
+    const updateData = {
+      name: req.body.name,
+      price: req.body.price,
+      quantity: req.body.quantity,
+      description: req.body.description,
+      category: req.body.category,
+    };
 
-      // If new image uploaded → save new URL
-      if (req.file) {
-        updateData.image = getImageUrl(req, req.file.filename);
-      }
-
-      const updatedProduct = await Product.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true }
-      );
-
-      if (!updatedProduct)
-        return res.status(404).json({ message: "Product not found" });
-
-      res.json(updatedProduct);
-    } catch (err) {
-      console.error("Update Product Error:", err);
-      res.status(500).json({ message: "Failed to update product" });
+    if (req.file) {
+      updateData.image = getImageUrl(req.file.filename);
     }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedProduct)
+      return res.status(404).json({ message: "Product not found" });
+
+    res.json(updatedProduct);
+  } catch (err) {
+    console.error("Update Product Error:", err);
+    res.status(500).json({ message: "Failed to update product" });
   }
-);
+});
 
 // ===============================
-// DELETE PRODUCT (Admin Only)
+// DELETE PRODUCT (Admin)
 // ===============================
 router.delete("/:id", auth, adminAuth, async (req, res) => {
   try {
