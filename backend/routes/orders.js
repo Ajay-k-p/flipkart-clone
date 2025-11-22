@@ -5,9 +5,11 @@ const { auth, adminAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
-// =============================================
-//       PLACE ORDER  (USER)
-// =============================================
+/*
+|--------------------------------------------------------------------------
+| PLACE ORDER (USER)
+|--------------------------------------------------------------------------
+*/
 router.post("/", auth, async (req, res) => {
   try {
     const { products } = req.body;
@@ -27,7 +29,7 @@ router.post("/", auth, async (req, res) => {
         });
       }
 
-      // ❌ Out of stock
+      // ❌ If out of stock
       if (Number(product.quantity) < Number(item.quantity)) {
         return res.status(400).json({
           message: `"${product.name}" is out of stock`,
@@ -35,38 +37,43 @@ router.post("/", auth, async (req, res) => {
         });
       }
 
-      // 🔥 CORRECT STOCK REDUCTION
-      const newQuantity = Number(product.quantity) - Number(item.quantity);
-
-      // 🔥 FORCE SAVE STOCK USING updateOne (never fails)
+      // -----------------------------------------
+      // 🔥 CORRECT STOCK REDUCTION (ATLAS SAFE)
+      // -----------------------------------------
+      const newQty = Number(product.quantity) - Number(item.quantity);
       await Product.updateOne(
         { _id: product._id },
         {
-          quantity: newQuantity,
-          isOutOfStock: newQuantity <= 0
+          quantity: newQty,
+          isOutOfStock: newQty <= 0
         }
       );
 
-      // Add product to order
+      // -----------------------------------------
+      // Store product snapshot inside order
+      // (image is Cloudinary URL already)
+      // -----------------------------------------
       enrichedProducts.push({
         productId: product._id,
         productName: product.name,
-        productImage: product.image, // no change
+        productImage: product.image, // Cloudinary URL
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
       });
     }
 
+    // -----------------------------------------
     // Save order
+    // -----------------------------------------
     const order = new Order({
       userId: req.user.id,
       products: enrichedProducts,
-      status: "Pending"
+      status: "Pending",
     });
 
     await order.save();
 
-    // Notify admin
+    // 🔔 Notify admin via socket
     const io = req.app.get("io");
     if (io) io.emit("orderPlaced", order);
 
@@ -78,12 +85,16 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// =============================================
-//       GET USER ORDERS
-// =============================================
+/*
+|--------------------------------------------------------------------------
+| GET USER ORDERS
+|--------------------------------------------------------------------------
+*/
 router.get("/", auth, async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId: req.user.id })
+      .sort({ createdAt: -1 });
+
     res.json(orders);
   } catch (error) {
     console.error("Get User Orders Error:", error);
@@ -91,9 +102,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// =============================================
-//       ADMIN: GET ALL ORDERS
-// =============================================
+/*
+|--------------------------------------------------------------------------
+| ADMIN — GET ALL ORDERS
+|--------------------------------------------------------------------------
+*/
 router.get("/admin/all", auth, adminAuth, async (req, res) => {
   try {
     const orders = await Order.find()
@@ -107,9 +120,11 @@ router.get("/admin/all", auth, adminAuth, async (req, res) => {
   }
 });
 
-// =============================================
-//       ADMIN: UPDATE ORDER
-// =============================================
+/*
+|--------------------------------------------------------------------------
+| ADMIN — UPDATE ORDER
+|--------------------------------------------------------------------------
+*/
 router.put("/admin/update/:id", auth, adminAuth, async (req, res) => {
   try {
     const { status, expectedDelivery } = req.body;

@@ -1,74 +1,87 @@
 const express = require("express");
 const Product = require("../models/Product");
-const multer = require("multer");
-const path = require("path");
 const { auth, adminAuth } = require("../middleware/auth");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
 
 const router = express.Router();
 
-// ===============================
-// Multer Setup
-// ===============================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + path.extname(file.originalname)),
+// ----------------------
+// Cloudinary Config
+// ----------------------
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
 });
 
-const upload = multer({ storage });
+// Multer (store uploaded file temporarily)
+const upload = multer({ dest: "temp/" });
 
-// ===============================
-// FIXED: Always use Render Base URL
-// ===============================
-const BASE_URL = "https://flipkart-clone-glvx.onrender.com";
-
-const getImageUrl = (filename) => {
-  return `${BASE_URL}/uploads/${filename}`;
+// ----------------------
+// UPLOAD TO CLOUDINARY
+// ----------------------
+const uploadToCloudinary = async (localFilePath) => {
+  try {
+    const result = await cloudinary.uploader.upload(localFilePath, {
+      folder: "flipkart_products",
+    });
+    fs.unlinkSync(localFilePath); // remove temp file
+    return result.secure_url;
+  } catch (err) {
+    fs.unlinkSync(localFilePath);
+    throw err;
+  }
 };
 
-// ===============================
+// ----------------------
 // GET ALL PRODUCTS
-// ===============================
+// ----------------------
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
   } catch (err) {
-    console.error("Fetch Products Error:", err);
+    console.log(err);
     res.status(500).json({ message: "Failed to fetch products" });
   }
 });
 
-// ===============================
-// ADD PRODUCT (Admin)
-// ===============================
+// ----------------------
+// ADD PRODUCT
+// ----------------------
 router.post("/", auth, adminAuth, upload.single("image"), async (req, res) => {
   try {
-    const imageUrl = req.file ? getImageUrl(req.file.filename) : null;
+    let imageUrl = null;
 
-    const newProduct = new Product({
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file.path);
+    }
+
+    const product = new Product({
       name: req.body.name,
       price: req.body.price,
       quantity: req.body.quantity,
       image: imageUrl,
-      description: req.body.description || "",
-      category: req.body.category || "general",
+      description: req.body.description,
+      category: req.body.category,
     });
 
-    await newProduct.save();
-    res.status(201).json(newProduct);
+    await product.save();
+    res.status(201).json(product);
   } catch (err) {
-    console.error("Add Product Error:", err);
+    console.log("Add Product Error:", err);
     res.status(500).json({ message: "Failed to add product" });
   }
 });
 
-// ===============================
-// UPDATE PRODUCT (Admin)
-// ===============================
+// ----------------------
+// UPDATE PRODUCT
+// ----------------------
 router.put("/:id", auth, adminAuth, upload.single("image"), async (req, res) => {
   try {
-    const updateData = {
+    let updateData = {
       name: req.body.name,
       price: req.body.price,
       quantity: req.body.quantity,
@@ -77,7 +90,7 @@ router.put("/:id", auth, adminAuth, upload.single("image"), async (req, res) => 
     };
 
     if (req.file) {
-      updateData.image = getImageUrl(req.file.filename);
+      updateData.image = await uploadToCloudinary(req.file.path);
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -86,29 +99,22 @@ router.put("/:id", auth, adminAuth, upload.single("image"), async (req, res) => 
       { new: true }
     );
 
-    if (!updatedProduct)
-      return res.status(404).json({ message: "Product not found" });
-
     res.json(updatedProduct);
   } catch (err) {
-    console.error("Update Product Error:", err);
+    console.log("Update Product Error:", err);
     res.status(500).json({ message: "Failed to update product" });
   }
 });
 
-// ===============================
-// DELETE PRODUCT (Admin)
-// ===============================
+// ----------------------
+// DELETE PRODUCT
+// ----------------------
 router.delete("/:id", auth, adminAuth, async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-
-    if (!deletedProduct)
-      return res.status(404).json({ message: "Product not found" });
-
-    res.json({ message: "Product deleted successfully" });
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: "Product deleted" });
   } catch (err) {
-    console.error("Delete Product Error:", err);
+    console.log("Delete Product Error:", err);
     res.status(500).json({ message: "Failed to delete product" });
   }
 });
