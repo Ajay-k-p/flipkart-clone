@@ -36,8 +36,7 @@ const AdminDashboard = () => {
   const fetchProducts = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/products`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${process.env.REACT_APP_API_URL}/api/products`
       );
       setProducts(res.data);
     } catch (err) {
@@ -52,7 +51,7 @@ const AdminDashboard = () => {
     }
   }, [token]);
 
-  // Add / Update Product
+  // Add or Update product
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
@@ -89,8 +88,9 @@ const AdminDashboard = () => {
         alert("Product Added!");
       }
 
-      setNewProduct({ name: '', price: '', quantity: '', image: null, id: null });
+      setNewProduct({ name: "", price: "", quantity: "", image: null, id: null });
       fetchProducts();
+
     } catch (err) {
       console.error(err);
       alert("Failed to save product");
@@ -122,7 +122,6 @@ const AdminDashboard = () => {
       id: prod._id,
       image: null
     });
-
     setActiveTab("addProduct");
   };
 
@@ -136,8 +135,8 @@ const AdminDashboard = () => {
       );
 
       setOrders(orders.map(o => (o._id === id ? res.data : o)));
-
       alert("Order Updated!");
+
     } catch (err) {
       console.error(err);
       alert("Failed to update order");
@@ -149,8 +148,6 @@ const AdminDashboard = () => {
       <Header />
 
       <div className="admin-page">
-
-        {/* TOP HEADER WITH DROPDOWN */}
         <div className="admin-header">
           <h1 className="admin-heading">Admin Dashboard</h1>
 
@@ -165,24 +162,21 @@ const AdminDashboard = () => {
           </select>
         </div>
 
-        {/* ADD PRODUCT — CENTERED */}
         {activeTab === "addProduct" && (
           <div className="section add-product-wrapper">
             <div className="add-product-card">
-
               <h2 className="section-title">
                 {newProduct.id ? "Edit Product" : "Add Product"}
               </h2>
 
               <form onSubmit={handleAddProduct}>
+
                 <input
                   type="text"
                   className="input-field"
                   placeholder="Name"
                   value={newProduct.name}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, name: e.target.value })
-                  }
+                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                   required
                 />
 
@@ -191,9 +185,7 @@ const AdminDashboard = () => {
                   className="input-field"
                   placeholder="Price"
                   value={newProduct.price}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, price: e.target.value })
-                  }
+                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                   required
                 />
 
@@ -202,22 +194,21 @@ const AdminDashboard = () => {
                   className="input-field"
                   placeholder="Quantity"
                   value={newProduct.quantity}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, quantity: e.target.value })
-                  }
+                  onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
                   required
                 />
 
-                {/* Existing Product Image */}
+                {/* Show existing image when editing */}
                 {newProduct.id &&
-                  products.find((p) => p._id === newProduct.id)?.image && (
+                  products.find(p => p._id === newProduct.id)?.image && (
                     <img
-                      src={products.find((p) => p._id === newProduct.id).image}
-                      alt="current"
+                      src={products.find(p => p._id === newProduct.id).image}
                       className="admin-small-img"
+                      alt="current"
                     />
                   )}
 
+                {/* File upload */}
                 <input
                   type="file"
                   className="input-file"
@@ -229,13 +220,12 @@ const AdminDashboard = () => {
                 <button className="btn-yellow">
                   {newProduct.id ? "Update Product" : "Add Product"}
                 </button>
-              </form>
 
+              </form>
             </div>
           </div>
         )}
 
-        {/* MANAGE PRODUCTS — GRID */}
         {activeTab === "manageProducts" && (
           <div className="section">
             <h2 className="section-title">Manage Products</h2>
@@ -243,6 +233,7 @@ const AdminDashboard = () => {
             <div className="admin-grid">
               {products.map((prod) => (
                 <div key={prod._id} className="admin-small-card">
+
                   <img src={prod.image} alt="" className="admin-small-img" />
 
                   <p><strong>Name:</strong> {prod.name}</p>
@@ -256,13 +247,13 @@ const AdminDashboard = () => {
                   <button className="btn-red" onClick={() => handleDeleteProduct(prod._id)}>
                     Delete
                   </button>
+
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* MANAGE ORDERS — GRID */}
         {activeTab === "manageOrders" && (
           <div className="section">
             <h2 className="section-title">Manage Orders</h2>

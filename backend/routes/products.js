@@ -3,7 +3,6 @@ const Product = require("../models/Product");
 const { auth, adminAuth } = require("../middleware/auth");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-const fs = require("fs");
 
 const router = express.Router();
 
@@ -16,23 +15,24 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET,
 });
 
-// Multer (store uploaded file temporarily)
-const upload = multer({ dest: "temp/" });
+// ----------------------
+// Multer Memory Storage (NO local uploads folder)
+// ----------------------
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // ----------------------
-// UPLOAD TO CLOUDINARY
+// Upload Buffer to Cloudinary
 // ----------------------
-const uploadToCloudinary = async (localFilePath) => {
-  try {
-    const result = await cloudinary.uploader.upload(localFilePath, {
-      folder: "flipkart_products",
-    });
-    fs.unlinkSync(localFilePath); // remove temp file
-    return result.secure_url;
-  } catch (err) {
-    fs.unlinkSync(localFilePath);
-    throw err;
-  }
+const uploadToCloudinary = async (buffer) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "flipkart_products" }, (err, result) => {
+        if (err) reject(err);
+        else resolve(result.secure_url);
+      })
+      .end(buffer);
+  });
 };
 
 // ----------------------
@@ -56,7 +56,7 @@ router.post("/", auth, adminAuth, upload.single("image"), async (req, res) => {
     let imageUrl = null;
 
     if (req.file) {
-      imageUrl = await uploadToCloudinary(req.file.path);
+      imageUrl = await uploadToCloudinary(req.file.buffer);
     }
 
     const product = new Product({
@@ -90,7 +90,7 @@ router.put("/:id", auth, adminAuth, upload.single("image"), async (req, res) => 
     };
 
     if (req.file) {
-      updateData.image = await uploadToCloudinary(req.file.path);
+      updateData.image = await uploadToCloudinary(req.file.buffer);
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
